@@ -1,0 +1,2 @@
+Cleat is a URL-shortener, providing it's services to any Harbor application with a simple Harbor::Cascade,
+and using routes unlikely to conflict with an existing application by prepending them with a `~` (tilde). 
