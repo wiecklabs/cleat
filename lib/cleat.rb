@@ -57,9 +57,9 @@ module Harbor
       url = path
       unless Cleat::whitelist.any? { |domain| url =~ domain }
         if url =~ /^\//
-          url = "#{request.env["DOMAIN"]}#{url}"
+          url = "#{request.host}#{url}"
         else
-          url = "#{request.env["DOMAIN"]}/#{url}"
+          url = "#{request.host}/#{url}"
         end
       end
       url = "http://#{url}" unless url =~ /^http\:\/\//i
