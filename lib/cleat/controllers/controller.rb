@@ -3,7 +3,7 @@ class Cleat::Controller
   attr_accessor :request, :response
   
   def show(key)
-    response.puts Cleat::Url::url(key)
+    response.redirect Cleat::Url::url(key)
   end
   
   def create(url)
