@@ -3,11 +3,20 @@ class Cleat::Controller
   attr_accessor :request, :response
   
   def show(key)
-    response.redirect Cleat::Url::url(key)
+    if url = Cleat::Url::url(key)
+      response.redirect url
+    else
+      response.status = 404 # Not Found
+    end
   end
   
   def create(url)
-    response.puts Cleat::Url::short(url)
+    if short = Cleat::Url::short(url)
+      response.puts short
+    else
+      # Didn't pass the whitelist filter.
+      response.status = 403 # Forbidden
+    end
   end
   
   def index
