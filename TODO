@@ -1,0 +1,2 @@
+* Add tracking/statistics of URLs
+* Either track referrer, or add the ability to force-create duplicate URL entries (more reliable, but more cumbersome to use from an application developer perspective)
