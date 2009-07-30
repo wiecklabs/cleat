@@ -10,6 +10,8 @@ Harbor::Mailer.host = "localhost:3000"
 
 DataMapper.setup :default, "sqlite3://#{Pathname(__FILE__).dirname.expand_path + "urls.db"}"
 
+Cleat::whitelist! "" # Match any domain, DO NOT use this on a production application!
+
 if $0 == __FILE__
   require "harbor/console"
   Harbor::Console.start

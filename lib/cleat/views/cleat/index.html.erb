@@ -10,5 +10,13 @@
       <input type="text" name="url" id="url">
       <input type="submit" value="Go!">
     </form>
+    
+    <% if request.environment == "development" %>
+    <ul>
+      <% Cleat::Url.all(:order => [:created_at.desc], :limit => 1000).each do |url| %>
+      <li><%= url.short %> (<%= url %>)</li>
+      <% end %>
+    </ul>
+    <% end %>
   </body>
 </html>

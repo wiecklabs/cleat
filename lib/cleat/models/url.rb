@@ -37,8 +37,13 @@ class Cleat::Url
   end
   
   def self.short(url)
-    instance = first(:url => url) || create(:url => url)
-    instance.short
+    url = "http://#{url}" unless url =~ /^https?\:\/\//i
+    if Cleat::whitelist.any? { |domain| url =~ domain }
+      instance = first(:url => url) || create(:url => url)
+      instance.short
+    else
+      nil
+    end
   end
   
   def self.url(short)

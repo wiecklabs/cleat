@@ -26,6 +26,27 @@ class Cleat < Harbor::Application
     end
     
   end
+  
+  def self.fake!
+    DataMapper::auto_migrate!
+    
+    gem "faker"
+    require "faker"
+    
+    @whitelist = [/^http\:\/\/.+/i]
+    10_000.times do |i|
+      Cleat::Url::short("http://#{Faker::Internet::domain_name}/#{i}")
+    end
+  end
+  
+  @whitelist = []
+  def self.whitelist
+    @whitelist
+  end
+  
+  def self.whitelist!(domain)
+    @whitelist << /^(https?\:\/\/)#{domain.sub(/https?\:\/\//i, "")}/i
+  end
 end
 
 require Pathname(__FILE__).dirname + "cleat" + "models" + "url"
