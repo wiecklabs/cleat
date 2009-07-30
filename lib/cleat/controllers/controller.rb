@@ -12,7 +12,7 @@ class Cleat::Controller
   
   def create(url)
     if short = Cleat::Url::short(url)
-      response.puts short
+      response.render "cleat/show", :url => url, :layout => nil
     else
       # Didn't pass the whitelist filter.
       response.status = 403 # Forbidden

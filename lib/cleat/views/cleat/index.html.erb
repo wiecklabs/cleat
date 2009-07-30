@@ -1,22 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-  "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-  <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>Cleat: Url Shortening Service</title>
-  </head>
-  <body>
-    <form action="/~" method="post" accept-charset="utf-8">
-      <input type="text" name="url" id="url">
-      <input type="submit" value="Go!">
-    </form>
-    
-    <% if request.environment == "development" %>
-    <ul>
-      <% Cleat::Url.all(:order => [:created_at.desc], :limit => 1000).each do |url| %>
-      <li><%= url.short %> (<%= url %>)</li>
-      <% end %>
-    </ul>
-    <% end %>
-  </body>
-</html>
+<form action="/~" method="post" accept-charset="utf-8">
+  <input type="text" name="url" id="url">
+  <input type="submit" value="Go!">
+</form>
+
+<% if request.environment == "development" %>
+<ul>
+  <% Cleat::Url.all(:order => [:created_at.desc], :limit => 1000).each do |url| %>
+  <li><%= url.short %> (<%= url %>)</li>
+  <% end %>
+</ul>
+<% end %>

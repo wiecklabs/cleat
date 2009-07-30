@@ -45,7 +45,7 @@ class Cleat < Harbor::Application
   end
   
   def self.whitelist!(domain)
-    @whitelist << /^(https?\:\/\/)#{domain.sub(/https?\:\/\//i, "")}/i
+    @whitelist << /^(https?\:\/\/)?#{domain.sub(/https?\:\/\//i, "")}/i
   end
 end
 
@@ -64,7 +64,15 @@ module Harbor
       end
       url = "http://#{url}" unless url =~ /^http\:\/\//i
       
-      Cleat::Url::short(url)
+      cleated = "#{request.scheme}://#{request.host}"
+      
+      if request.scheme == "https" && request.port != 443 ||
+        request.scheme == "http" && request.port != 80
+        cleated << ":#{request.port}"
+      end
+      
+      cleated << "/~#{Cleat::Url::short(url)}"
+      cleated
     end
   end
 end
