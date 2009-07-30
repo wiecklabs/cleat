@@ -50,3 +50,21 @@ class Cleat < Harbor::Application
 end
 
 require Pathname(__FILE__).dirname + "cleat" + "models" + "url"
+
+module Harbor
+  class ViewContext
+    def cleat(path)
+      url = path
+      unless Cleat::whitelist.any? { |domain| url =~ domain }
+        if url =~ /^\//
+          url = "#{request.env["DOMAIN"]}#{url}"
+        else
+          url = "#{request.env["DOMAIN"]}/#{url}"
+        end
+      end
+      url = "http://#{url}" unless url =~ /^http\:\/\//i
+      
+      Cleat::Url::short(url)
+    end
+  end
+end
