@@ -5,6 +5,9 @@ gem "harbor", "~> 0.9"
 require "harbor"
 require "harbor/mailer"
 
+gem "dm-core"
+require "dm-core"
+
 Harbor::View::path.unshift(Pathname(__FILE__).dirname + "cleat" + "views")
 
 class Cleat < Harbor::Application
@@ -25,4 +28,4 @@ class Cleat < Harbor::Application
   end
 end
 
-require (Pathname(__FILE__).dirname) + "cleat" + "uri"
+require Pathname(__FILE__).dirname + "cleat" + "models" + "url"

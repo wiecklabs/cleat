@@ -3,11 +3,11 @@ class Cleat::Controller
   attr_accessor :request, :response
   
   def show(key)
-    response.puts "http://localhost:3000/"
+    response.puts Cleat::Url::url(key)
   end
   
   def create(url)
-    response.puts Cleat::Uri.new(url).short
+    response.puts Cleat::Url::short(url)
   end
   
   def index
