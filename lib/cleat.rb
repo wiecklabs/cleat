@@ -64,11 +64,17 @@ module Harbor
       end
       url = "http://#{url}" unless url =~ /^http\:\/\//i
       
-      cleated = "#{request.scheme}://#{request.host}"
+      cleated = "#{request.scheme}://"
       
-      if request.scheme == "https" && request.port != 443 ||
-        request.scheme == "http" && request.port != 80
-        cleated << ":#{request.port}"
+      if request.host =~ /(localhost|127\.0\.0\.1)/i && !request.env["X_FORWARDED_SERVER"].to_s.empty?
+        cleated << request.env["X_FORWARDED_SERVER"]
+      else
+        cleated << request.host
+        
+        if request.scheme == "https" && request.port != 443 ||
+          request.scheme == "http" && request.port != 80
+          cleated << ":#{request.port}"
+        end
       end
       
       cleated << "/~#{Cleat::Url::short(url)}"
