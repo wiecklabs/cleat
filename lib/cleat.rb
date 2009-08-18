@@ -70,7 +70,7 @@ module Harbor
       # We may be behind mod_proxy and need to check the forwarded server variable...
       host = request.env["HTTP_X_FORWARDED_SERVER"]
       host = request.env["HTTP_HOST"] if host.nil? || host.empty?
-      cleated << request.host
+      cleated << host
 
       if host =~ /(localhost|127\.0\.0\.1)/i
         # Append port if non-standard.
