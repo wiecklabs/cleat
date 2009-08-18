@@ -55,6 +55,7 @@ module Harbor
   class ViewContext
     def cleat(path)
       url = path
+
       unless Cleat::whitelist.any? { |domain| url =~ domain }
         if url =~ /^\//
           url = "#{request.host}#{url}"
@@ -65,18 +66,20 @@ module Harbor
       url = "http://#{url}" unless url =~ /^http\:\/\//i
       
       cleated = "#{request.scheme}://"
-      
-      if request.host =~ /(localhost|127\.0\.0\.1)/i && !request.env["X_FORWARDED_SERVER"].to_s.empty?
-        cleated << request.env["X_FORWARDED_SERVER"]
-      else
-        cleated << request.host
-        
-        if request.scheme == "https" && request.port != 443 ||
-          request.scheme == "http" && request.port != 80
-          cleated << ":#{request.port}"
-        end
+
+      # We may be behind mod_proxy and need to check the forwarded server variable...
+      host = request.env["HTTP_X_FORWARDED_SERVER"]
+      if host.nil? || (host =~ /(localhost|127\.0\.0\.1)/i && !request.env["HTTP_HOST"].to_s.empty?)
+        host = request.env["HTTP_HOST"]
       end
-      
+      cleated << request.host
+
+      # Append port if non-standard.
+      if (request.scheme =~ /https/ && request.port != 443) ||
+        (request.scheme =~ /http/ && request.port != 80)
+        cleated << ":#{request.port}"
+      end
+
       cleated << "/~#{Cleat::Url::short(url)}"
       cleated
     end
