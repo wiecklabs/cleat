@@ -69,15 +69,15 @@ module Harbor
 
       # We may be behind mod_proxy and need to check the forwarded server variable...
       host = request.env["HTTP_X_FORWARDED_SERVER"]
-      if host.nil? || (host =~ /(localhost|127\.0\.0\.1)/i && !request.env["HTTP_HOST"].to_s.empty?)
-        host = request.env["HTTP_HOST"]
-      end
+      host = request.env["HTTP_HOST"] if host.nil? || host.empty?
       cleated << request.host
 
-      # Append port if non-standard.
-      if (request.scheme =~ /https/ && request.port != 443) ||
-        (request.scheme =~ /http/ && request.port != 80)
-        cleated << ":#{request.port}"
+      if host =~ /(localhost|127\.0\.0\.1)/i
+        # Append port if non-standard.
+        if (request.scheme =~ /https/ && request.port != 443) ||
+          (request.scheme =~ /http/ && request.port != 80)
+          cleated << ":#{request.port}"
+        end
       end
 
       cleated << "/~#{Cleat::Url::short(url)}"
