@@ -7,7 +7,7 @@ class Cleat::Controller
   def show(key, inline = false)
     if url = Cleat::Url::url(key)
       if inline
-        response.puts open(url)
+        response.render "cleat/frame", :url => url, :layout => nil
       else
         response.redirect url
       end
