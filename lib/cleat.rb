@@ -20,7 +20,7 @@ class Cleat < Harbor::Application
     Harbor::Router.new do
       using services, Cleat::Controller do
         get("/~") { |controller| controller.index }
-        get("/~:key") { |controller, request| controller.show(request["key"]) }
+        get("/~:key") { |controller, request| controller.show(request["key"], request["inline"] == "true") }
         post("/~") { |controller, request| controller.create(request["url"]) }
       end
     end

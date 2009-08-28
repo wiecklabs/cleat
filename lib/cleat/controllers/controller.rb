@@ -1,10 +1,16 @@
+require "open-uri"
+
 class Cleat::Controller
   
   attr_accessor :request, :response
   
-  def show(key)
+  def show(key, inline = false)
     if url = Cleat::Url::url(key)
-      response.redirect url
+      if inline
+        response.puts open(url)
+      else
+        response.redirect url
+      end
     else
       response.status = 404 # Not Found
     end
