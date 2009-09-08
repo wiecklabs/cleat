@@ -19,23 +19,15 @@ class Cleat < Harbor::Application
 
     Harbor::Router.new do
       using services, Cleat::Controller do
-        get("/~") { |controller| controller.index }
-        get("/%7") { |controller| controller.index }
-        get("/~:key") do |controller, request|
+        get("/$") { |controller| controller.index }
+        get("/$:key") do |controller, request|
           if request["key"][-1, 1] == "!"
             controller.show(request["key"][0...-1], true)
           else
             controller.show(request["key"], false)
           end
         end
-        get("/%7E:key") do |controller, request|
-          if request["key"][-1, 1] == "!"
-            controller.show(request["key"][0...-1], true)
-          else
-            controller.show(request["key"], false)
-          end
-        end
-        post("/~") { |controller, request| controller.create(request["url"]) }
+        post("/$") { |controller, request| controller.create(request["url"]) }
       end
     end
     
