@@ -4,8 +4,8 @@ class Cleat
 
       def initialize(request, path)
         @request, @path = request, path
-        
-        @valid = Cleat::whitelist.any? { |domain| @path =~ domain }
+
+        @valid = (path =~ /^http/) ? Cleat::whitelist.any? { |domain| @path =~ domain } : true
 
         # We may be behind mod_proxy and need to check the forwarded server variable...
         @host = @request.env["HTTP_X_FORWARDED_SERVER"]

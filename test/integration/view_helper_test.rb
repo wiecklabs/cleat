@@ -8,6 +8,11 @@ module Integration
   
     def setup
       Cleat::Url.auto_migrate!
+
+      Cleat::clear_whitelist!
+      
+      Cleat.whitelist! "www.example.com"
+      Cleat.whitelist! "www.anotherexample.com"
     end
   
     def test_relative_path_link_from_request
@@ -39,6 +44,13 @@ module Integration
       
       assert_equal("http://www.anotherexample.com/this/is/a/sample/path", link.destination_url)
       assert_equal("http://www.example.com/~1", link.display_url)
+    end
+
+    def test_non_whitelisted_absolute_path_link_from_request
+      link = request("http://www.example.com/the/page/your/on").cleat_link_to("http://www.maliciousdomain.com/this/is/a/sample/path")
+      
+      assert_equal(nil, link.destination_url)
+      assert_equal(nil, link.display_url)
     end
     
     def test_absolute_path_link_from_request_with_non_standard_port
