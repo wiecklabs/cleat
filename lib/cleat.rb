@@ -76,7 +76,7 @@ module Harbor
   class ViewContext
 
 		def cleat(path)
-		  Cleat::UI::Link.new(request, path)
+		  Cleat::UI::Link.new(request, path).to_s
     end
 
   end
