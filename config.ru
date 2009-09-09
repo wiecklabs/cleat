@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
+# gem "harbor", ">= 0.12"
+# require "harbor"
+
 require "lib/cleat"
+require "harbor/logging"
 
 services = Harbor::Container.new
 services.register("mailer", Harbor::Mailer)

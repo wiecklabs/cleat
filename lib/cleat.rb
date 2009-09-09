@@ -1,7 +1,7 @@
 require "pathname"
 require "rubygems"
 
-gem "harbor", "~> 0.9"
+gem "harbor", ">= 0.9"
 require "harbor"
 require "harbor/mailer"
 
@@ -19,16 +19,20 @@ class Cleat < Harbor::Application
 
     Harbor::Router.new do
       using services, Cleat::Controller do
-        get("/~") { |controller| controller.index }
-        get("/~:key") do |controller, request|
-          if request["key"][-1, 1] == "!"
-            controller.show(request["key"][0...-1], true)
-          else
-            controller.show(request["key"], false)
+        get(/^\/#{Regexp.escape(Cleat.prefix)}$/) { |controller| controller.index }
+        
+        get(/^\/#{Regexp.escape(Cleat.prefix)}(.*)$/) do |controller, request|            
+          if request.path =~ /^\/#{Regexp.escape(Cleat.prefix)}(.*)$/
+            key = $1
+            if key[-1] == ?!
+              controller.show(key[0...-1], true)
+            else
+              controller.show(key, false)
+            end
           end
         end
-        post("/~") { |controller, request| controller.create(request["url"]) }
-      end
+        post(/^\/#{Regexp.escape(Cleat.prefix)}$/) { |controller, request| controller.create(request["url"]) }
+      end      
     end
     
   end
@@ -53,6 +57,16 @@ class Cleat < Harbor::Application
   def self.whitelist!(domain)
     @whitelist << /^(https?\:\/\/)?#{domain.sub(/https?\:\/\//i, "")}/i
   end
+
+  @prefix = '~'
+  def self.prefix
+    @prefix
+  end
+  
+  def self.prefix=(new_prefix)
+    @prefix = new_prefix
+  end
+
 end
 
 require Pathname(__FILE__).dirname + "cleat" + "models" + "url"
@@ -62,31 +76,24 @@ module Harbor
     def cleat(path)
       url = path
 
-      unless Cleat::whitelist.any? { |domain| url =~ domain }
-        if url =~ /^\//
-          url = "#{request.host}#{url}"
-        else
-          url = "#{request.host}/#{url}"
-        end
-      end
-      url = "http://#{url}" unless url =~ /^http\:\/\//i
-      
-      cleated = "#{request.scheme}://"
-
       # We may be behind mod_proxy and need to check the forwarded server variable...
       host = request.env["HTTP_X_FORWARDED_SERVER"]
       host = request.env["HTTP_HOST"] if host.nil? || host.empty?
-      cleated << host
 
-      if host =~ /(localhost|127\.0\.0\.1)/i
-        # Append port if non-standard.
-        if (request.scheme =~ /https/ && request.port != 443) ||
-          (request.scheme =~ /http/ && request.port != 80)
-          cleated << ":#{request.port}"
-        end
+      port = if !request.env["HTTP_X_FORWARDED_SERVER"] && ((request.scheme =~ /https/ && request.port != 443) || (request.scheme =~ /http/ && request.port != 80))
+        ":#{request.port}"
+      else
+        nil
       end
 
-      cleated << "/~#{Cleat::Url::short(url)}"
+      if Cleat::whitelist.any? { |domain| url =~ domain }
+        url = "#{host}#{port}/#{url.sub(/^\//, '')}"
+      else
+        return nil
+      end
+      url = "http://#{url}" unless url =~ /^http\:\/\//i
+      
+      cleated = "#{request.scheme}://#{host}#{port}/#{Cleat.prefix}#{Cleat::Url::short(url)}"
       cleated
     end
   end
