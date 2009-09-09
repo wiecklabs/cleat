@@ -70,31 +70,14 @@ class Cleat < Harbor::Application
 end
 
 require Pathname(__FILE__).dirname + "cleat" + "models" + "url"
+require Pathname(__FILE__).dirname + "cleat" + "ui" + "link"
 
 module Harbor
   class ViewContext
-    def cleat(path)
-      url = path
 
-      # We may be behind mod_proxy and need to check the forwarded server variable...
-      host = request.env["HTTP_X_FORWARDED_SERVER"]
-      host = request.env["HTTP_HOST"] if host.nil? || host.empty?
-
-      port = if !request.env["HTTP_X_FORWARDED_SERVER"] && ((request.scheme =~ /https/ && request.port != 443) || (request.scheme =~ /http/ && request.port != 80))
-        ":#{request.port}"
-      else
-        nil
-      end
-
-      if Cleat::whitelist.any? { |domain| url =~ domain }
-        url = "#{host}#{port}/#{url.sub(/^\//, '')}"
-      else
-        return nil
-      end
-      url = "http://#{url}" unless url =~ /^http\:\/\//i
-      
-      cleated = "#{request.scheme}://#{host}#{port}/#{Cleat.prefix}#{Cleat::Url::short(url)}"
-      cleated
+		def cleat(path)
+		  Cleat::UI::Link.new(request, path)
     end
+
   end
 end
