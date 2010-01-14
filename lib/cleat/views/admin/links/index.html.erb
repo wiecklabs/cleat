@@ -1,0 +1,26 @@
+<h2>Links</h2>
+
+<div id="links_index">
+	<ul class="links" id="tabnav-left">
+	  <li <%= "class='selected'" if @request.path_info =~ %r{^/admin/links$} %>><a href="/admin/links">Active</a></li>
+	  <li <%= "class='selected'" if @request.path_info =~ %r{^/admin/links/expired$} %>><a href="/admin/links/expired">Expired</a></li>
+	</ul>
+  <ul class="links" id="tabnav-right">
+		<li><a href="/admin/links/new">+ New Link</a></li>
+	</ul>
+	
+  <form class="live_search">
+    <fieldset>
+      <label for="search_query">Live Search</label>
+      <input id="search_query" type="text" name="query">
+      <%= UI::LiveSearchBox.new(self, "links_list").to_s %>
+      <img id="spinner" src="<%= UI::Asset.new("images/spinner.gif") %>" style="display: none;">
+
+      <div class="page_count">
+        <%# UI::Pagination.new(self, 100, @search.total_count, @search.page) %>
+      </div>
+    </fieldset>
+  </form>
+
+  <%= render "admin/links/_list" %>
+</div>

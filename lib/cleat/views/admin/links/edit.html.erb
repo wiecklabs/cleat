@@ -1,0 +1,10 @@
+<h2>Edit Link</h2>
+
+<% form "/admin/links/#{@link.id}", :method => :put do %>
+  <%= render "admin/links/_form" %>
+
+  <div class="actions">
+    <input type="submit" value="Save" class="submit">
+    <a href="/admin/links" class="cancel">Cancel</a>
+  </div>
+<% end %>

@@ -1,0 +1,16 @@
+index
+log
+tmp
+*.db
+*.*~
+*#*
+.DS_Store
+public/assets
+public/photos
+public/images/badges
+private
+bin/*
+vendor/ruby/1.8/gems/*
+vendor/ruby/1.8/specifications/*
+vendor/ruby/1.8/environment.rb
+!vendor/ruby/1.8/cache

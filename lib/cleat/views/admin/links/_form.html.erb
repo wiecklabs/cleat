@@ -1,0 +1,51 @@
+<% head "stylesheets/date_picker.css" do %>
+  <link rel="stylesheet" type="text/css" media="screen" href="<%= UI::Asset.new("stylesheets/date_picker.css") %>">
+<% end %>
+<% head "javascripts/jquery.datePicker.js" do %>
+  <script src="<%= UI::Asset.new('javascripts/jquery.datePicker.js') %>" type="text/javascript"></script>
+<% end %>
+<% head "javascripts/date.js" do %>
+  <script src="<%= UI::Asset.new("javascripts/date.js") %>" type="text/javascript"></script>
+<% end %>
+<% head do %>
+<style type="text/css" media="screen">
+  label { font-weight: normal; }
+  label.required { font-weight: bold; }
+  .date_picker { width: 100px; }
+  a.dp-choose-date {
+    float: left; display: block; overflow: hidden;
+    width: 5px; height: 16px; margin: 5px 3px 0; padding: 0 5px; text-indent: -2000px;
+    background: url('<%= UI::Asset.new("images/calendar.gif") %>') no-repeat;
+  }
+</style>
+<script type="text/javascript">
+  $(function() {
+    Date.format = 'yyyy-mm-dd';
+    $('.date_picker').datePicker();
+  });
+</script>
+<% end %>
+
+<%= UI::ErrorMessages.new(self, "There are problems with this link that prevented it from being saved.", response.errors).to_s %>
+
+<fieldset>
+  <label for="link_destination" class="required">* Destination</label>
+  <input type="text" id="link_destination" name="link[destination]" value="<%= @link.destination %>">
+
+  <label for="link_title">Title</label>
+  <input type="text" id="link_title" name="link[title]" value="<%= @link.title %>">
+
+  <label for="link_description">Description</label>
+  <textarea id="link_description" name="link[description]" rows="5"><%=h @link.description %></textarea>
+
+  <label for="link_timeframe_start_date" class="required">* Start Date</label>
+  <input type="text" name="link[start_date]" id="link_timeframe_start_date" class="date_picker" value="<%= @link.start_date %>">
+
+  <label for="link_timeframe_end_date">End Date</label>
+  <input type="text" name="link[end_date]" id="link_timeframe_end_date" class="date_picker" value="<%= @link.end_date %>">
+
+  <label for="link_custom_short_url">
+    Custom Short URL
+  </label>
+  <input type="text" id="link_custom_short_url" name="link[custom_short_url]" value="<%= @link.custom_short_url %>">
+</fieldset>
