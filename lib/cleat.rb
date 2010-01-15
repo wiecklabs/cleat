@@ -13,6 +13,8 @@ Harbor::View::layouts.default("layouts/application")
 
 class Cleat < Harbor::Application
 
+  autoload :Controller, "cleat/controllers/controller"
+
   module Admin
     autoload :Links, "cleat/controllers/admin/links"
   end
@@ -22,6 +24,7 @@ class Cleat < Harbor::Application
 
       using services, Admin::Links do
         get("/admin/links") { |links| links.index }
+        get("/admin/links/expired") { |links| links.expired }
         get("/admin/links/new") { |links| links.new }
         get("/admin/links/:id") { |links, params| links.edit(params["id"]) }
 
@@ -39,6 +42,19 @@ class Cleat < Harbor::Application
           link_params.delete("end_date") if link_params["end_date"].blank?
 
           links.update(params["id"], link_params)
+        end
+      end
+
+      using services, Controller do
+        get(/^\/#{Regexp.escape(Cleat.prefix)}(.*)$/) do |controller, request|
+          if request.path_info =~ /^\/#{Regexp.escape(Cleat.prefix)}(.*)$/
+            key = $1
+            if key[-1] == ?!
+              controller.show(key[0...-1])
+            else
+              controller.redirect(key)
+            end
+          end
         end
       end
 
@@ -71,6 +87,17 @@ class Cleat < Harbor::Application
   def self.tmp_path
     @@tmp_path
   end
+
+  @@prefix = "~"
+  def self.prefix
+    @@prefix
+  end
+
+  def self.prefix=(prefix)
+    @@prefix = prefix
+  end
 end
 
 require "cleat/models/link"
+require "cleat/models/statistics/link_session_click"
+require "cleat/models/statistics/link_user_click"

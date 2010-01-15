@@ -23,30 +23,55 @@ class Cleat::Link
     url
   end
 
+  def active?
+    ((today = Date.today) >= start_date) && (!end_date || end_date >= today)
+  end
+
+  def destination=(url)
+    url = "http://#{url}" unless url =~ /^https?\:\/\//i
+    attribute_set(:destination, url)
+  end
+
   def short
     if new_record?
       raise StandardError.new("Cleat::Link must be saved to generate a short-url-key.")
     else
-      @short ||= id.to_s(36)
+      @short ||= custom_short_url.blank? ? id.to_s(36) : custom_short_url
+    end
+  end
+
+  def record_click(session)
+    if session.user
+      Statistics::LinkUserClick.create(
+        :link_id => id,
+        :session_id => session.id,
+        :user_id => session.user.id
+      )
+    else    
+      Statistics::LinkSessionClick.create(
+        :link_id => id,
+        :session_id => session.id
+      )
     end
   end
 
   def self.shorten(url)
     url = "http://#{url}" unless url =~ /^https?\:\/\//i
 
-    if Cleat::whitelist.any? { |domain| url =~ domain }
-      instance = first(:destination => destination) || create(:destination => destination)
-      instance.short
-    else
-      nil
-    end
+    first(:destination => url) || create(:destination => url)
   end
 
-  def self.url(short)
-    if instance = get(short.to_i(36))
-      instance.url
+  def self.base36?(string)
+    string =~ /^[a-z0-9]+$/
+  end
+
+  def self.for(short)
+    if base36?(short)
+      conditions = ["id = ? OR custom_short_url = ?", short.to_i(36), short]
     else
-      nil
+      conditions = ["custom_short_url = ?", short]
     end
+
+    instance = first(:conditions => conditions)
   end
 end
