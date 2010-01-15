@@ -49,5 +49,45 @@ module Integration
       assert_equal 1, Statistics::LinkUserClick.count(:link_id => 1)
     end
 
+    def test_show_with_no_link
+      response = Harbor::Test::Response.new
+      assert_throws(:abort_request) { @container.get(:controller, :response => response).show("1") }
+      assert_equal 404, response.status
+    end
+
+    def test_show_with_expired_link
+      link = Cleat::Link.create(:destination => "example.com", :start_date => Date.today - 2, :end_date => Date.today - 1)
+
+      response = Harbor::Test::Response.new
+      assert_throws(:abort_request) { @container.get(:controller, :response => response).show("1") }
+      assert_equal 404, response.status
+    end
+
+    def test_show_with_active_link
+      link = Cleat::Link.create(:destination => "example.com")
+
+      response = Harbor::Test::Response.new
+      response.request = @container.get(:request)
+
+      assert_nothing_thrown { @container.get(:controller, :response => response).show("1") }
+      assert_equal 200, response.status
+    end
+
+    def test_show_stats
+      link = Cleat::Link.create(:destination => "example.com")
+
+      response = Harbor::Test::Response.new
+      response.request = @container.get(:request)
+      @container.get(:controller, :response => response).show("1")
+
+      assert_equal 1, Statistics::LinkSessionClick.count(:link_id => 1)
+
+      response = Harbor::Test::Response.new
+      response.request = @container.get(:request)
+      @container.get(:controller, :response => response, :session => { :user_id => 1 }).show("1")
+
+      assert_equal 1, Statistics::LinkUserClick.count(:link_id => 1)
+    end
+
   end
 end
