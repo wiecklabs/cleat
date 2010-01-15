@@ -1,7 +1,26 @@
 <h2>Edit Link</h2>
 
 <% form "/admin/links/#{@link.id}", :method => :put do %>
-  <%= render "admin/links/_form" %>
+  <div class="column">
+    <%= render "admin/links/_form" %>
+  </div>
+
+  <div class="column">
+    <h3>Link Details</h3>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>Short URL</td>
+          <td><a href="<%= link = Cleat::UI::Link.new(request, @link) %>"><%= link %></a></td>
+        </tr>
+        <tr>
+          <td>Framed URL</td>
+          <td><a href="<%= link = Cleat::UI::Link.new(request, @link, true) %>"><%= link %></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="actions">
     <input type="submit" value="Save" class="submit">

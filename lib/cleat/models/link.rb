@@ -20,7 +20,7 @@ class Cleat::Link
     :message => "Custom Short URL can only include numbers, letters, and dashes."
 
   def to_s
-    url
+    destination
   end
 
   def active?

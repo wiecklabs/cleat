@@ -101,3 +101,4 @@ end
 require "cleat/models/link"
 require "cleat/models/statistics/link_session_click"
 require "cleat/models/statistics/link_user_click"
+require "cleat/ui/link"
