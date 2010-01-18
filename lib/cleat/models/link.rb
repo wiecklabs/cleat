@@ -27,8 +27,8 @@ class Cleat::Link
 
   property :created_at, DateTime
 
-  after :create do
-    update_attributes(:title => "#{Date.today}:#{short}") if title.blank?
+  after :create do |success|
+    update_attributes(:title => "#{Date.today}:#{short}") if success && title.blank?
   end
 
   validates_present :destination, :start_date
