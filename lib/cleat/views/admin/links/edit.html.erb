@@ -12,11 +12,23 @@
       <tbody>
         <tr>
           <td>Short URL</td>
-          <td><a href="<%= link = Cleat::UI::Link.new(request, @link) %>"><%= link %></a></td>
+          <td>
+            <% short_url = Cleat::UI::Link.new(request, @link) %>
+            <% if @link.active? %><a href="<%= short_url %>"><% end %>
+            <%= short_url %>
+            <% if @link.active? %></a><% end %>
+            <%= "(expired)" unless @link.active? %>
+          </td>
         </tr>
         <tr>
           <td>Framed URL</td>
-          <td><a href="<%= link = Cleat::UI::Link.new(request, @link, true) %>"><%= link %></a></td>
+          <td>
+            <% framed_url = Cleat::UI::Link.new(request, @link, true) %>
+            <% if @link.active? %><a href="<%= framed_url %>"><% end %>
+            <%= framed_url %>
+            <% if @link.active? %></a><% end %>
+            <%= "(expired)" unless @link.active? %>
+          </td>
         </tr>
       </tbody>
     </table>
