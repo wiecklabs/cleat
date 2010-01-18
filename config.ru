@@ -8,7 +8,7 @@ services = Harbor::Container.new
 services.register("mailer", Harbor::Mailer)
 services.register("mail_server", Harbor::MailServers::Sendmail)
 
-DataMapper.setup :default, "postgres://localhost/cleat_development"
+DataMapper.setup :default, "postgres://localhost/cleat_#{ENV["ENVIRONMENT"]}"
 
 Harbor::Session.configure { |session| session[:store] = Harbor::Contrib::Session::DataMapper }
 Harbor::Contrib::Stats.orm = "data_mapper"
