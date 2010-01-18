@@ -9,6 +9,15 @@
     </tr>
   </thead>
   <tbody>
+    <% @search.each do |link| %>
+    <tr>
+      <td><a href="/admin/links/<%= link.id %>"><%= link.title %></a></td>
+      <td><a href="<%= destination = link.destination %>"><%= destination %></a></td>
+      <td><a href="<%= short_url = Cleat::UI::Link.new(request, link).to_s %>"><%= short_url %></a></td>
+      <td><%= link.start_date %></td>
+      <td><%= link.end_date %></td>
+    </tr>
+    <% end %>
   </tbody>
 
 <% unless request.xhr? %></table><% end %>

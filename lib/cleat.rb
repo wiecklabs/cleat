@@ -23,8 +23,22 @@ class Cleat < Harbor::Application
     Harbor::Router.new do
 
       using services, Admin::Links do
-        get("/admin/links") { |links| links.index }
-        get("/admin/links/expired") { |links| links.expired }
+        get("/admin/links") do |links, params|
+          links.index(
+            params.fetch("page", 1),
+            params.fetch("page_size", 100),
+            params.fetch("query", nil)
+          )
+        end
+
+        get("/admin/links/expired") do |links, params|
+          links.expired(
+            params.fetch("page", 1),
+            params.fetch("page_size", 100),
+            params.fetch("query", nil)
+          )
+        end
+
         get("/admin/links/new") { |links| links.new }
         get("/admin/links/:id") { |links, params| links.edit(params["id"]) }
 
@@ -99,6 +113,7 @@ class Cleat < Harbor::Application
 end
 
 require "cleat/models/link"
+require "cleat/models/link/search"
 require "cleat/models/statistics/link_session_click"
 require "cleat/models/statistics/link_user_click"
 require "cleat/ui/link"

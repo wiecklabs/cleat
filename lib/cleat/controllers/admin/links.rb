@@ -2,8 +2,12 @@ class Cleat::Admin::Links
 
   attr_accessor :request, :response, :mailer
 
-  def index
-    response.render "admin/links/index"
+  def index(page, page_size, query = nil)
+    return search(page, page_size, Cleat::Link.active_conditions, query)
+  end
+
+  def expired(page, page_size, query = nil)
+    return search(page, page_size, Cleat::Link.expired_conditions, query)
   end
 
   def new
@@ -40,6 +44,18 @@ class Cleat::Admin::Links
     else
       response.errors << UI::ErrorMessages::DataMapperErrors.new(link)
       response.render "admin/links/edit", :link => link
+    end
+  end
+
+  private
+
+  def search(page, page_size, conditions, query)
+    search = Cleat::Link::Search.new(page, page_size, { :conditions => [conditions] }, query)
+
+    if request.xhr?
+      response.render "admin/links/_list", :search => search, :layout => nil
+    else
+      response.render "admin/links/index", :search => search
     end
   end
 

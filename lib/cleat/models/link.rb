@@ -1,6 +1,20 @@
 class Cleat::Link
   include DataMapper::Resource
 
+  @@full_text_search_fields = [:title, :description, :destination]
+  
+  def self.full_text_search_fields
+    @@full_text_search_fields
+  end
+
+  def self.active_conditions
+    "now()::date >= start_date AND (end_date is null OR end_date >= now()::date)"
+  end
+
+  def self.expired_conditions
+    "not (#{active_conditions})"
+  end
+
   property :id, Serial
   property :destination, Text, :blank => false, :lazy => false
 
@@ -12,6 +26,10 @@ class Cleat::Link
   property :custom_short_url, String, :length => 255
 
   property :created_at, DateTime
+
+  after :create do
+    update_attributes(:title => "#{Date.today}:#{short}") if title.blank?
+  end
 
   validates_present :destination, :start_date
   validates_format :custom_short_url,
