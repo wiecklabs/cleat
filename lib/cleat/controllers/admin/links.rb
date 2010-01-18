@@ -27,7 +27,7 @@ class Cleat::Admin::Links
 
     if link.save
       response.message("success", "Link successfully created.")
-      response.redirect "/admin/links/#{link.id}"
+      response.redirect "/admin/links"
     else
       response.errors << UI::ErrorMessages::DataMapperErrors.new(link)
       response.render "admin/links/new", :link => link
