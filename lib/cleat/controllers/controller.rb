@@ -3,7 +3,7 @@ class Cleat
     attr_accessor :request, :response
 
     def redirect(key)
-      if (link = Cleat::Link.for(key)) && link.active?
+      if link = Cleat::Link.for(key)
         link.record_click(request.session)
 
         response.redirect link.destination
@@ -13,7 +13,7 @@ class Cleat
     end
 
     def show(key)
-      if (link = Cleat::Link.for(key)) && link.active?
+      if link = Cleat::Link.for(key)
         link.record_click(request.session)
 
         response.render "cleat/frame", :link => link

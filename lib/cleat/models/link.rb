@@ -83,12 +83,14 @@ class Cleat::Link
     string =~ /^[a-z0-9]+$/
   end
 
-  def self.for(short)
+  def self.for(short, only_return_active = true)
     if base36?(short)
       conditions = ["id = ? OR custom_short_url = ?", short.to_i(36), short]
     else
       conditions = ["custom_short_url = ?", short]
     end
+
+    conditions[0] = "#{active_conditions} AND #{conditions[0]}" if only_return_active
 
     instance = first(:conditions => conditions)
   end
