@@ -58,17 +58,21 @@ class Cleat::Link
     end
   end
 
-  def record_click(session)
+  def record_click(session, referrer = nil, framed = false)
     if session.user
       Statistics::LinkUserClick.create(
         :link_id => id,
         :session_id => session.id,
-        :user_id => session.user.id
+        :user_id => session.user.id,
+        :referrer => referrer,
+        :framed => framed
       )
     else    
       Statistics::LinkSessionClick.create(
         :link_id => id,
-        :session_id => session.id
+        :session_id => session.id,
+        :referrer => referrer,
+        :framed => framed
       )
     end
   end
