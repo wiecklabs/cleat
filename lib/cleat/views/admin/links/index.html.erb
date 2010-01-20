@@ -2,8 +2,8 @@
 
 <div id="links_index">
 	<ul class="links" id="tabnav-left">
-	  <li <%= "class='selected'" if @request.path_info =~ %r{^/admin/links$} %>><a href="/admin/links">Active</a></li>
-	  <li <%= "class='selected'" if @request.path_info =~ %r{^/admin/links/expired$} %>><a href="/admin/links/expired">Expired</a></li>
+	  <li class="filter <%= "selected" if @request.path_info =~ %r{^/admin/links$} %>"><a href="/admin/links">Active</a></li>
+	  <li class="filter <%= "selected" if @request.path_info =~ %r{^/admin/links/expired$} %>"><a href="/admin/links/expired">Expired</a></li>
 	</ul>
   <ul class="links" id="tabnav-right">
 		<li><a href="/admin/links/new">+ New Link</a></li>
@@ -23,4 +23,10 @@
   </form>
 
   <%= render "admin/links/_list" %>
-</div>
+</div>  
+
+<% head do %>
+<style type="text/css" media="screen">
+  #spinner { float: left; }
+</style>
+<% end %>

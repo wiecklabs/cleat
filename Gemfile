@@ -1,4 +1,5 @@
-gem "port_authority"
+gem "port_authority", "1.6.26"
+gem "ui", "0.7.39"
 gem "mail_builder"
 gem "logging"
 
