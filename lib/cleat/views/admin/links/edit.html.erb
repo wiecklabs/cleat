@@ -32,6 +32,12 @@
         </tr>
       </tbody>
     </table>
+
+    <% if authorized?("Links", "statistics") %>
+    <h3>Reporting</h3>
+
+    <%= render "admin/links/_statistics", :link => @link %>
+    <% end %>
   </div>
 
   <div class="actions">

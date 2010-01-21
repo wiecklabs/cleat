@@ -11,7 +11,10 @@
   <tbody>
     <% @search.each do |link| %>
     <tr>
-      <td><a href="/admin/links/<%= link.id %>"><%= link.title %></a></td>
+      <td>
+        <% if authorized?("Links", "update") %><a href="/admin/links/<%= link.id %>"><%= link.title %></a>
+        <% else %><%= link.title %><% end %>
+      </td>
       <td><a href="<%= destination = link.destination %>"><%= destination %></a></td>
       <td style="width: 7em"><%= link.start_date %></td>
       <td style="width: 7em"><%= link.end_date %></td>

@@ -58,6 +58,36 @@ class Cleat::Link
     end
   end
 
+  def click_count(start_date = '1970-1-1', end_date = Time.now)
+    start_date = Date.parse(start_date.to_s)
+    end_date = Date.parse(end_date.to_s) + 1
+    session_clicks = Statistics::LinkSessionClick.count(:link_id => id, :created_at.gte => start_date, :created_at.lte => end_date)
+    user_clicks = Statistics::LinkUserClick.count(:link_id => id, :created_at.gte => start_date, :created_at.lte => end_date)
+    
+    session_clicks + user_clicks
+  end
+
+  def click_stats_by_date(start_date = '1970-1-1', end_date = Time.now)
+    start_date = Date.parse(start_date.to_s)
+    end_date = Date.parse(end_date.to_s) + 1
+
+    query = <<-SQL.margin
+    SELECT stats.created_at, user_agents.remote_ip, stats.referrer, user_agents.raw, users.email
+    FROM (
+      SELECT created_at, referrer, session_id, user_id FROM statistics_link_user_clicks
+      WHERE link_id = ? AND created_at BETWEEN ? AND ?
+      UNION
+      SELECT created_at, referrer, session_id, -1 as user_id FROM statistics_link_session_clicks
+      WHERE link_id = ? AND created_at BETWEEN ? AND ?
+    ) as stats
+    LEFT JOIN user_agents ON stats.session_id = user_agents.session_id
+    LEFT JOIN users ON stats.user_id = users.id
+    ORDER BY stats.created_at ASC
+    SQL
+
+    repository.adapter.query(query, id, start_date, end_date, id, start_date, end_date)
+  end
+
   def record_click(session, referrer = nil, framed = false)
     if session.user
       Statistics::LinkUserClick.create(

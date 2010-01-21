@@ -1,0 +1,41 @@
+<% 
+  @start_date ||= @link.start_date
+  @end_date ||= @link.end_date || Date.today
+-%>
+<% unless @request.xhr? %>
+<script type="text/javascript">
+  $(function() {
+    $('#statistics-date-range').bind('date_changed', function(e, params) {
+      start_date = params['start_date'];
+      end_date = params['end_date'];
+      $.post("/admin/links/<%= @link.id %>/statistics",
+        { start_date: start_date, end_date: end_date },
+        function(html) { $('.statistics table').replaceWith(html); }
+      );
+      return false;
+    });
+  });
+</script>
+<div class="statistics">
+  <%= UI::DateRangeSelection.new(self, :id => 'statistics-date-range', :selected_start_date => @start_date, :selected_end_date => @end_date, :start_date => Cleat::Link.first(:order => [:created_at.asc]).created_at).to_s %>
+<% end %>
+  <table cellpadding="0" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Click-Throughs</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="2"><a href="/admin/links/<%= @link.id %>/statistics?start_date=<%= @start_date %>&end_date=<%= @end_date %>">Export CSV</a></td>
+      </tr>
+    </tfoot>
+    <tbody>
+      <tr>
+        <td><%= @link.click_count(@start_date, @end_date) %></td>
+      </tr>
+    </tbody>
+  </table>
+<% unless @request.xhr? -%>
+</div>
+<% end -%>

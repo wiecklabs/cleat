@@ -57,6 +57,14 @@ class Cleat < Harbor::Application
 
           links.update(params["id"], link_params)
         end
+
+        post("/admin/links/:id/statistics") do |links, params|
+          links.statistics(params["id"], params["start_date"], params["end_date"])
+        end
+
+        get("/admin/links/:id/statistics") do |links, params|
+          links.export_statistics(params["id"], params["start_date"], params["end_date"])
+        end
       end
 
       using services, Controller do
@@ -110,6 +118,14 @@ class Cleat < Harbor::Application
   def self.prefix=(prefix)
     @@prefix = prefix
   end
+  
+  def self.permissions
+    {
+      "Links" => %w(list create update statistics)
+    }
+  end
+
+  PermissionSet::permissions.merge!(permissions)
 end
 
 require "cleat/models/link"
