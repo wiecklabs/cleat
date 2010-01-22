@@ -1,47 +1,47 @@
 <h2>Edit Link</h2>
 
-<% form "/admin/links/#{@link.id}", :method => :put do %>
-  <div class="column">
+<div class="column">
+  
+  <% form "/admin/links/#{@link.id}", :method => :put do %>
     <%= render "admin/links/_form" %>
-  </div>
+    <div class="actions">
+      <input type="submit" value="Save" class="submit">
+      <a href="/admin/links" class="cancel">Cancel</a>
+    </div>
+  <% end %>
+</div>
 
-  <div class="column">
-    <h3>Link Details</h3>
+<div class="column">
+  <h3>Link Details</h3>
 
-    <table>
-      <tbody>
-        <tr>
-          <td>Short URL</td>
-          <td>
-            <% short_url = Cleat::UI::Link.new(request, @link) %>
-            <% if @link.active? %><a href="<%= short_url %>"><% end %>
-            <%= short_url %>
-            <% if @link.active? %></a><% end %>
-            <%= "(expired)" unless @link.active? %>
-          </td>
-        </tr>
-        <tr>
-          <td>Framed URL</td>
-          <td>
-            <% framed_url = Cleat::UI::Link.new(request, @link, true) %>
-            <% if @link.active? %><a href="<%= framed_url %>"><% end %>
-            <%= framed_url %>
-            <% if @link.active? %></a><% end %>
-            <%= "(expired)" unless @link.active? %>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>Short URL</td>
+        <td>
+          <% short_url = Cleat::UI::Link.new(request, @link) %>
+          <% if @link.active? %><a href="<%= short_url %>"><% end %>
+          <%= short_url %>
+          <% if @link.active? %></a><% end %>
+          <%= "(expired)" unless @link.active? %>
+        </td>
+      </tr>
+      <tr>
+        <td>Framed URL</td>
+        <td>
+          <% framed_url = Cleat::UI::Link.new(request, @link, true) %>
+          <% if @link.active? %><a href="<%= framed_url %>"><% end %>
+          <%= framed_url %>
+          <% if @link.active? %></a><% end %>
+          <%= "(expired)" unless @link.active? %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <% if authorized?("Links", "statistics") %>
-    <h3>Reporting</h3>
+  <% if authorized?("Links", "statistics") %>
+  <h3>Reporting</h3>
 
-    <%= render "admin/links/_statistics", :link => @link %>
-    <% end %>
-  </div>
-
-  <div class="actions">
-    <input type="submit" value="Save" class="submit">
-    <a href="/admin/links" class="cancel">Cancel</a>
-  </div>
-<% end %>
+  <%= render "admin/links/_statistics", :link => @link %>
+  <% end %>
+</div>

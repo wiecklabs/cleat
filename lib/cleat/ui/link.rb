@@ -9,7 +9,7 @@ class Cleat
           host[":#{request.port}"] ? nil : ":#{request.port}"
         end
 
-        @url = "#{request.scheme}://#{host}#{port}/#{Cleat.prefix}#{link.short}#{"!" if inline}"
+        @url = "#{request.scheme}://#{host}#{port}/#{Cleat.prefix}#{link.short_url}#{"!" if inline}"
       end
 
       def to_s

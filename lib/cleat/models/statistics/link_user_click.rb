@@ -3,7 +3,7 @@ module Statistics
     include DataMapper::Resource
 
     property :id, Serial, :key => true
-    property :link_id, Integer
+    property :link_short_url, Text
     property :user_id, Integer
     property :session_id, String, :length => 255
     property :referrer, Text

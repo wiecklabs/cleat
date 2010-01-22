@@ -44,8 +44,10 @@
   <label for="link_timeframe_end_date">End Date</label>
   <input type="text" name="link[end_date]" id="link_timeframe_end_date" class="date_picker" value="<%= @link.end_date %>">
 
+  <% if @link.new_record? %>
   <label for="link_custom_short_url">
     Custom Short URL
   </label>
-  <input type="text" id="link_custom_short_url" name="link[custom_short_url]" value="<%= @link.custom_short_url %>">
+  <input type="text" id="link_custom_short_url" name="link[custom_short_url]" value="<%= @link.short_url %>">
+  <% end %>
 </fieldset>

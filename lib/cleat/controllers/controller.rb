@@ -2,8 +2,8 @@ class Cleat
   class Controller
     attr_accessor :request, :response
 
-    def redirect(key)
-      if link = Cleat::Link.for(key)
+    def redirect(short_url)
+      if link = Cleat::Link.active.first(:short_url => short_url)
         link.record_click(request.session, request.referrer, false)
 
         response.redirect link.destination
@@ -12,8 +12,8 @@ class Cleat
       end
     end
 
-    def show(key)
-      if link = Cleat::Link.for(key)
+    def show(short_url)
+      if link = Cleat::Link.active.first(:short_url => short_url)
         link.record_click(request.session, request.referrer, true)
 
         response.render "cleat/frame", :link => link
