@@ -1,6 +1,59 @@
 class Cleat::Link
   include DataMapper::Resource
 
+  def self.auto_upgrade!(repository_name = self.repository_name)
+    repository(repository_name) do |r|
+      unless r.adapter.storage_exists?(storage_name(repository_name))
+        auto_migrate_up!(repository_name)
+      end
+    end
+  end
+
+  def self.auto_migrate_down!(repository_name = self.repository_name)
+    repository(repository_name) do |r|
+      r.adapter.execute(<<-SQL)
+      DROP TABLE IF EXISTS cleat_links;
+      DROP TABLE IF EXISTS cleat_forbidden_words;
+      DROP SEQUENCE IF EXISTS cleat_links_id_seq;
+      SQL
+    end
+  end
+
+  def self.auto_migrate_up!(repository_name = self.repository_name)
+    create_table = <<-SQL
+    create table cleat_links (
+      short_url text primary key not null default cleat_link_next_key(),
+      destination text not null,
+      title varchar(255),
+      description text,
+      start_date date default 'now()',
+      end_date date,
+      created_at timestamp without time zone default 'now()'
+    );
+    CREATE SEQUENCE cleat_links_id_seq;
+
+    DROP FUNCTION cleat_link_default_title_value();
+    CREATE OR REPLACE FUNCTION cleat_link_default_title_value() RETURNS TRIGGER AS $$
+      BEGIN
+        IF NEW.title = '' OR NEW.title is null THEN
+          UPDATE cleat_links SET title = NEW.start_date::date || ':' || NEW.short_url WHERE short_url = NEW.short_url;
+        END IF;
+        RETURN NEW;
+      END;
+    $$ LANGUAGE 'plpgsql';
+
+    CREATE TRIGGER cleat_link_default_title AFTER INSERT ON cleat_links FOR EACH ROW
+    EXECUTE PROCEDURE cleat_link_default_title_value();
+    SQL
+
+    functions = Dir[Pathname(__FILE__).dirname.parent + "sql/*.sql"].map { |file| File.read(file) }
+
+    repository(repository_name) do |r|
+      r.adapter.execute(create_table)
+      functions.each { |function| r.adapter.execute(function) }
+    end
+  end
+
   @@full_text_search_fields = [:title, :description, :destination]
   
   def self.full_text_search_fields
@@ -15,7 +68,7 @@ class Cleat::Link
     "not (#{active_conditions})"
   end
 
-  property :id, Serial
+  property :short_url, Text, :key => true
   property :destination, Text, :blank => false, :lazy => false
 
   property :title, String, :length => 255
@@ -26,10 +79,6 @@ class Cleat::Link
   property :custom_short_url, String, :length => 255
 
   property :created_at, DateTime
-
-  after :create do |success|
-    update_attributes(:title => "#{Date.today}:#{short}") if success && title.blank?
-  end
 
   validates_present :destination, :start_date
   validates_format :custom_short_url,
