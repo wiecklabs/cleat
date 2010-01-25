@@ -142,6 +142,7 @@ class Cleat < Harbor::Application
   PermissionSet::permissions.merge!(permissions)
 end
 
+require "cleat/helpers/cleat"
 require "cleat/models/link"
 require "cleat/models/link/search"
 require "cleat/models/statistics/link_session_click"
