@@ -9,6 +9,7 @@ require "port_authority"
 $:.unshift(Pathname(__FILE__).dirname.expand_path)
 
 Harbor::View::path.unshift(Pathname(__FILE__).dirname + "cleat" + "views")
+Harbor::View::layouts.map("cleat/not_found", "layouts/exception")
 Harbor::View::layouts.default("layouts/application")
 
 class Cleat < Harbor::Application
