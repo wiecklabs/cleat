@@ -93,7 +93,7 @@ class Cleat::Link
   end
 
   def custom_short_url=(short_url)
-    attribute_set(:short_url, short_url) unless short_url.blank?
+    attribute_set(:short_url, short_url.downcase) unless short_url.blank?
   end
 
   def click_count(start_date = '1970-1-1', end_date = Time.now)
