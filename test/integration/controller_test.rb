@@ -41,12 +41,12 @@ module Integration
       response = Harbor::Test::Response.new
       @container.get(:controller, :response => response).redirect("1")
 
-      assert_equal 1, Statistics::LinkSessionClick.count(:link_id => 1)
+      assert_equal 1, Statistics::LinkSessionClick.count(:link_short_url => "1")
 
       response = Harbor::Test::Response.new
       @container.get(:controller, :response => response, :session => { :user_id => 1 }).redirect("1")
 
-      assert_equal 1, Statistics::LinkUserClick.count(:link_id => 1)
+      assert_equal 1, Statistics::LinkUserClick.count(:link_short_url => "1")
     end
 
     def test_show_with_no_link
@@ -80,13 +80,13 @@ module Integration
       response.request = @container.get(:request)
       @container.get(:controller, :response => response).show("1")
 
-      assert_equal 1, Statistics::LinkSessionClick.count(:link_id => 1)
+      assert_equal 1, Statistics::LinkSessionClick.count(:link_short_url => "1")
 
       response = Harbor::Test::Response.new
       response.request = @container.get(:request)
       @container.get(:controller, :response => response, :session => { :user_id => 1 }).show("1")
 
-      assert_equal 1, Statistics::LinkUserClick.count(:link_id => 1)
+      assert_equal 1, Statistics::LinkUserClick.count(:link_short_url => "1")
     end
 
   end

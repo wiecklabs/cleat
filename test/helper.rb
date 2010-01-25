@@ -4,7 +4,7 @@ require "test/unit"
 require Pathname(__FILE__).dirname.parent + "lib/cleat"
 require "harbor/test/test"
 
-DataMapper.setup :default, "sqlite3::memory:"
+DataMapper.setup :default, "postgres://localhost/cleat_development"
 DataMapper.auto_migrate!
 
 class Time

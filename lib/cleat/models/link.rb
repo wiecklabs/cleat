@@ -48,7 +48,7 @@ class Cleat::Link
   end
 
   def self.active
-    all(:conditions => active_conditions)
+    all(:conditions => [active_conditions])
   end
 
   def self.active_conditions
