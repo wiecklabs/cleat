@@ -110,6 +110,20 @@ class Cleat < Harbor::Application
     @@tmp_path
   end
 
+  @@base_url = nil
+  def self.base_url
+    unless @@base_url
+      @@base_url = Socket::gethostbyname(Socket::gethostname)[0] rescue 'localhost'
+      warn "!! Cleat::base_url not set, defaulting to #{@@base_url} !!"
+    end
+
+    @@base_url
+  end
+
+  def self.base_url=(base_url)
+    @@base_url = base_url
+  end
+
   @@prefix = "~"
   def self.prefix
     @@prefix

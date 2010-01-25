@@ -19,7 +19,7 @@
       <tr>
         <td>Short URL</td>
         <td>
-          <% short_url = Cleat::UI::Link.new(request, @link) %>
+          <% short_url = Cleat::UI::Link.new(@link) %>
           <% if @link.active? %><a href="<%= short_url %>"><% end %>
           <%= short_url %>
           <% if @link.active? %></a><% end %>
@@ -29,7 +29,7 @@
       <tr>
         <td>Framed URL</td>
         <td>
-          <% framed_url = Cleat::UI::Link.new(request, @link, true) %>
+          <% framed_url = Cleat::UI::Link.new(@link, true) %>
           <% if @link.active? %><a href="<%= framed_url %>"><% end %>
           <%= framed_url %>
           <% if @link.active? %></a><% end %>

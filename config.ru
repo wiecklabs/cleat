@@ -17,6 +17,11 @@ Harbor::View.plugins("admin/links") << '<a href="/admin/links">Links</a>'
 
 UI::public_path = Cleat::public_path
 
+case ENV["ENVIRONMENT"]
+when "development"
+  Cleat::base_url = "http://localhost:#{defined?(Thin) ? 3000 : (defined?(Unicorn) ? 8080 : 9292)}"
+end
+
 if $0 == __FILE__
   require "harbor/console"
   Harbor::Console.start
