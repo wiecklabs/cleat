@@ -9,6 +9,7 @@ require "port_authority"
 $:.unshift(Pathname(__FILE__).dirname.expand_path)
 
 Harbor::View::path.unshift(Pathname(__FILE__).dirname + "cleat" + "views")
+Harbor::View::layouts.map("cleat/frame", nil)
 Harbor::View::layouts.map("cleat/not_found", "layouts/exception")
 Harbor::View::layouts.default("layouts/application")
 
@@ -69,8 +70,10 @@ class Cleat < Harbor::Application
       end
 
       using services, Controller do
-        get(/^\/#{Regexp.escape(Cleat.prefix)}(.*)$/) do |controller, request|
-          if request.path_info =~ /^\/#{Regexp.escape(Cleat.prefix)}(.*)$/
+        prefix = Regexp.escape(Cleat.prefix)
+        escaped_prefix = Regexp.escape(Rack::Utils.escape(Cleat.prefix))
+        get(/^\/(?:#{prefix}|#{escaped_prefix})(.*)$/) do |controller, request|
+          if request.path_info =~ /^\/(?:#{prefix}|#{escaped_prefix})(.*)$/
             key = $1
             if key[-1] == ?!
               controller.show(key[0...-1])
