@@ -36,8 +36,8 @@ class Cleat::Link
     functions = Dir[Pathname(__FILE__).dirname.parent + "sql/*.sql"].map { |file| File.read(file) }
 
     repository(repository_name) do |r|
-      r.adapter.execute(create_table)
       functions.each { |function| r.adapter.execute(function) }
+      r.adapter.execute(create_table)
     end
   end
 
