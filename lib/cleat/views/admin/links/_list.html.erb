@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th>Title</th>
+      <th>Short URL</th>
       <th>Destination</th>
       <th style="width: 7em">Start Date</th>
       <th style="width: 7em">End Date</th>
@@ -14,6 +15,12 @@
       <td>
         <% if authorized?("Links", "update") %><a href="/admin/links/<%= link.id %>"><%= link.title %></a>
         <% else %><%= link.title %><% end %>
+      </td>
+      <td>
+        <% short_url = Cleat::UI::Link.new(link) %>
+        <% if link.active? %><a href="<%= short_url %>"><% end %>
+        <%= short_url %>
+        <% if link.active? %></a><% end %>
       </td>
       <td><a href="<%= destination = link.destination %>"><%= destination %></a></td>
       <td style="width: 7em"><%= link.start_date %></td>

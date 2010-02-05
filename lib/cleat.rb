@@ -44,6 +44,9 @@ class Cleat < Harbor::Application
         get("/admin/links/new") { |links| links.new }
         get("/admin/links/:id") { |links, params| links.edit(params["id"]) }
 
+        get("/admin/links/:id/delete") { |links, params| links.delete(params["id"]) }
+        delete("/admin/links/:id") { |links, params| links.destroy(params["id"]) }
+
         post("/admin/links") do |links, params|
           link_params = params["link"]
           link_params.delete("start_date") if link_params["start_date"].blank?
@@ -60,12 +63,12 @@ class Cleat < Harbor::Application
           links.update(params["id"], link_params)
         end
 
-        post("/admin/links/:id/statistics") do |links, params|
-          links.statistics(params["id"], params["start_date"], params["end_date"])
-        end
-
         get("/admin/links/:id/statistics") do |links, params|
           links.export_statistics(params["id"], params["start_date"], params["end_date"])
+        end
+
+        post("/admin/links/:id/statistics") do |links, params|
+          links.statistics(params["id"], params["start_date"], params["end_date"])
         end
       end
 
@@ -139,7 +142,7 @@ class Cleat < Harbor::Application
   
   def self.permissions
     {
-      "Links" => %w(list create update statistics)
+      "Links" => %w(list create update statistics delete)
     }
   end
 

@@ -54,6 +54,22 @@ class Cleat::Admin::Links
     end
   end
 
+  protect "Links", "delete"
+  def delete(id)
+    link = Cleat::Link.get(id)
+
+    response.render "admin/links/delete", :link => link
+  end
+
+  protect "Links", "delete"
+  def destroy(id)
+    link = Cleat::Link.get(id)
+    link.destroy
+
+    response.message("success", "Link successfully deleted")
+    response.redirect "/admin/links"
+  end
+
   protect "Links", "statistics"
   def statistics(id, start_date, end_date)
     link = Cleat::Link.get(id)

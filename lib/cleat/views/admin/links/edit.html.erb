@@ -7,6 +7,8 @@
     <div class="actions">
       <input type="submit" value="Save" class="submit">
       <a href="/admin/links" class="cancel">Cancel</a>
+
+      <a class="modal_link delete" href="/admin/links/<%= @link.id %>/delete"><img src="<%= UI::Asset.new("images/delete_big.png") %>"></a>
     </div>
   <% end %>
 </div>
@@ -45,3 +47,5 @@
   <%= render "admin/links/_statistics", :link => @link %>
   <% end %>
 </div>
+
+<div id="modal"></div>
