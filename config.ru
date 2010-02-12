@@ -3,6 +3,9 @@
 # gem "harbor", ">= 0.12"
 # require "harbor"
 
+require "rubygems"
+require "do_sqlite3"
+
 require "lib/cleat"
 require "harbor/logging"
 

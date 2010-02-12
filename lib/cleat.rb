@@ -19,10 +19,18 @@ class Cleat < Harbor::Application
 
     Harbor::Router.new do
       using services, Cleat::Controller do
-        get(/^\/#{Regexp.escape(Cleat.prefix)}$/) { |controller| controller.index }
-        
-        get(/^\/#{Regexp.escape(Cleat.prefix)}(.*)$/) do |controller, request|            
-          if request.path =~ /^\/#{Regexp.escape(Cleat.prefix)}(.*)$/
+        prefix = Regexp.escape(Cleat.prefix)
+        escaped_prefix = Regexp.escape(Rack::Utils.escape(Cleat.prefix))
+
+        index_regex = /^\/(?:#{prefix}|#{escaped_prefix})$/
+        show_regex = /^\/(?:#{prefix}|#{escaped_prefix})(.*)$/
+
+        get(index_regex) do |controller|
+          controller.index
+        end
+
+        get(show_regex) do |controller, request|
+          if request.path =~ show_regex
             key = $1
             if key[-1] == ?!
               controller.show(key[0...-1], true)
@@ -31,8 +39,11 @@ class Cleat < Harbor::Application
             end
           end
         end
-        post(/^\/#{Regexp.escape(Cleat.prefix)}$/) { |controller, request| controller.create(request["url"]) }
-      end      
+
+        post(index_regex) do |controller, request|
+          controller.create(request["url"])
+        end
+      end
     end
     
   end

@@ -18,7 +18,7 @@ require "rake/gempackagetask"
 
 NAME = "cleat"
 SUMMARY = "Cleat Url Shortener"
-GEM_VERSION = "0.9.1"
+GEM_VERSION = "0.9.2"
 
 spec = Gem::Specification.new do |s|
   s.name = NAME
