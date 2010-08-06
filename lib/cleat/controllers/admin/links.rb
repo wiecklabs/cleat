@@ -96,8 +96,9 @@ class Cleat::Admin::Links
         csv << [stat.created_at.strftime("%Y-%m-%d"), ip, stat.referrer, stat.raw, stat.email] 
       end
     end
-
-    response.send_file("link_statistics_#{link.title.gsub(/\W+/, '_')}.csv", StringIO.new(csv), "text/csv")
+    filename = "link_statistics_"
+    filename << (link.title.blank? ? link.id.to_s : link.title.gsub(/\W+/, '_'))
+    response.send_file("#{filename}.csv", StringIO.new(csv), "text/csv")
   end
 
   private
