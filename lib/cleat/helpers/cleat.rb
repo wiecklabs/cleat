@@ -1,7 +1,7 @@
 class Cleat
   module Helpers
-    def cleat(url, inline = false)
-      Cleat::UI::Link.new(Cleat::Link::shorten(url, inline))
+    def cleat(url)
+      Cleat::UI::Link.new(Cleat::Link::shorten(url))
     end
   end
 end
