@@ -148,7 +148,13 @@ class Cleat::Link
   def self.shorten(url)
     url = "http://#{url}" unless url =~ /^https?\:\/\//i
 
-    first(:destination => url) || create(:destination => url)
+    # Hack to get around DM bug with :serial attributes casting to an integer
+    if link = first(:destination => url)
+      link
+    else
+      create(:destination => url)
+      first(:destination => url)
+    end
   end
 
 end
